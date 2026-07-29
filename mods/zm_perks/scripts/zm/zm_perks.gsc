@@ -2,15 +2,11 @@
 #include maps\mp\_utility;
 #include maps\mp\zombies\_zm_utility;
 #include maps\mp\zombies\_zm_perks;
-#include maps\mp\zombies\_zm_perk_divetonuke;
 #include maps\mp\_visionset_mgr;
-#include maps\mp\zombies\_zm_power;
 #include maps\mp\zombies\_zm;
 
 main()
 {
-    replaceFunc( maps\mp\zombies\_zm_perks::perks_register_clientfield, ::perks_register_clientfield );
-    replaceFunc( maps\mp\zombies\_zm::init_client_flags, ::init_client_flags );
     replaceFunc( maps\mp\zombies\_zm_perks::give_perk, ::give_perk );
     replaceFunc( maps\mp\zombies\_zm_perks::default_vending_precaching, ::default_vending_precaching );
 
@@ -88,100 +84,8 @@ perks()
         level.zombiemode_using_deadshot_perk = 1;
         level.zombiemode_using_additionalprimaryweapon_perk = 1;
         level.zombiemode_using_divetonuke_perk = 1;
-        maps\mp\zombies\_zm_perk_divetonuke::enable_divetonuke_perk_for_level();
+        level.perk_purchase_limit = 9;
     }
-}
-
-perks_register_clientfield()
-{
-	bits = 1;
-	if (isdefined(level.zombie_include_weapons) && isdefined(level.zombie_include_weapons["emp_grenade_zm"]))
-	{
-		bits = 2;
-	}
-	if (isdefined(level.zombiemode_using_additionalprimaryweapon_perk) && level.zombiemode_using_additionalprimaryweapon_perk)
-	{
-		registerclientfield("toplayer", "perk_additional_primary_weapon", 1, bits, "int");
-	}
-	if (isdefined(level.zombiemode_using_deadshot_perk) && level.zombiemode_using_deadshot_perk)
-	{
-		registerclientfield("toplayer", "perk_dead_shot", 1, bits, "int");
-	}
-	if (isdefined(level.zombiemode_using_doubletap_perk) && level.zombiemode_using_doubletap_perk)
-	{
-		registerclientfield("toplayer", "perk_double_tap", 1, bits, "int");
-	}
-	if (isdefined(level.zombiemode_using_juggernaut_perk) && level.zombiemode_using_juggernaut_perk)
-	{
-		registerclientfield("toplayer", "perk_juggernaut", 1, bits, "int");
-	}
-	if (isdefined(level.zombiemode_using_marathon_perk) && level.zombiemode_using_marathon_perk)
-	{
-		registerclientfield("toplayer", "perk_marathon", 1, bits, "int");
-	}
-	if (isdefined(level.zombiemode_using_revive_perk) && level.zombiemode_using_revive_perk)
-	{
-		registerclientfield("toplayer", "perk_quick_revive", 1, bits, "int");
-	}
-	if (isdefined(level.zombiemode_using_sleightofhand_perk) && level.zombiemode_using_sleightofhand_perk)
-	{
-		registerclientfield("toplayer", "perk_sleight_of_hand", 1, bits, "int");
-	}
-	if (isdefined(level.zombiemode_using_tombstone_perk) && level.zombiemode_using_tombstone_perk)
-	{
-		registerclientfield("toplayer", "perk_tombstone", 1, bits, "int");
-	}
-	if (isdefined(level.zombiemode_using_perk_intro_fx) && level.zombiemode_using_perk_intro_fx)
-	{
-		registerclientfield("scriptmover", "clientfield_perk_intro_fx", 1000, 1, "int");
-	}
-	if (isdefined(level.zombiemode_using_chugabud_perk) && level.zombiemode_using_chugabud_perk)
-	{
-		registerclientfield("toplayer", "perk_chugabud", 1000, 1, "int");
-	}
-	if (isdefined(level._custom_perks))
-	{
-		a_keys = getarraykeys(level._custom_perks);
-		for (i = 0; i < a_keys.size; i++)
-		{
-			if (isdefined(level._custom_perks[a_keys[i]].clientfield_register))
-			{
-				level [[level._custom_perks[a_keys[i]].clientfield_register]]();
-			}
-		}
-	}
-}
-
-init_client_flags()
-{
-	level.disable_deadshot_clientfield = 1;
-	if (isdefined(level.use_clientside_board_fx) && level.use_clientside_board_fx)
-	{
-		level._zombie_scriptmover_flag_board_horizontal_fx = 14;
-		level._zombie_scriptmover_flag_board_vertical_fx = 13;
-	}
-	if (isdefined(level.use_clientside_rock_tearin_fx) && level.use_clientside_rock_tearin_fx)
-	{
-		level._zombie_scriptmover_flag_rock_fx = 12;
-	}
-	level._zombie_player_flag_cloak_weapon = 14;
-	if (!(isdefined(level.disable_deadshot_clientfield) && level.disable_deadshot_clientfield))
-	{
-		registerclientfield("toplayer", "deadshot_perk", 1, 1, "int");
-	}
-	registerclientfield("actor", "zombie_riser_fx", 1, 1, "int");
-	if (!(isdefined(level._no_water_risers) && level._no_water_risers))
-	{
-		registerclientfield("actor", "zombie_riser_fx_water", 1, 1, "int");
-	}
-	if (isdefined(level._foliage_risers) && level._foliage_risers)
-	{
-		registerclientfield("actor", "zombie_riser_fx_foliage", 12000, 1, "int");
-	}
-	if (isdefined(level.risers_use_low_gravity_fx) && level.risers_use_low_gravity_fx)
-	{
-		registerclientfield("actor", "zombie_riser_fx_lowg", 1, 1, "int");
-	}
 }
 
 give_perk( perk, bought )
